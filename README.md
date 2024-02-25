@@ -1,6 +1,6 @@
 # bluebox
 
-An Electron application with React and TypeScript
+An Electron application with Vite, React, TypeScript, Sass, and Blueprintjs
 
 ## Recommended IDE Setup
 
@@ -32,3 +32,7 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+# Add executable 
+
+https://www.reddit.com/r/electronjs/comments/13a4j05/anyone_know_how_to_bundle_a_python_script_file/?rdt=42876

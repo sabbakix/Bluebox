@@ -1,8 +1,19 @@
 import Versions from './components/Versions'
 import electronLogo from './assets/electron.svg'
 
+import { useState } from 'react'
+
+import { Button, FocusStyleManager } from '@blueprintjs/core'
+
+FocusStyleManager.onlyShowFocusOnTabs()
+
 function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  const [count, setCount] = useState(0)
+
+  function handleClick(): void {
+    setCount(count + 1)
+  }
 
   return (
     <>
@@ -11,6 +22,11 @@ function App(): JSX.Element {
       <div className="text">
         Build an Electron app with <span className="react">React</span>
         &nbsp;and <span className="ts">TypeScript</span>
+      </div>
+      <div>
+        <Button className="button" onClick={handleClick} text="Hello ">
+          {count}
+        </Button>
       </div>
       <p className="tip">
         Please try pressing <code>F12</code> to open the devTool
