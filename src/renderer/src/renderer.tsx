@@ -4,8 +4,6 @@ import '@blueprintjs/datetime2/lib/css/blueprint-datetime2.css'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 import '@blueprintjs/table/lib/css/table.css'
 
-import './assets/main.scss'
-
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'

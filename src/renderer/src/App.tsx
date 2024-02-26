@@ -1,8 +1,8 @@
+import './assets/App.scss'
+
 import Versions from './components/Versions'
 import electronLogo from './assets/electron.svg'
-
-import { useState } from 'react'
-
+import { useState, SyntheticEvent } from 'react'
 import {
   FocusStyleManager,
   Button,
@@ -22,8 +22,9 @@ function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
   const [count, setCount] = useState(0)
 
-  function handleClick(e:any, param:string): void {
-    console.log(e.target,param)
+  function handleClick(e: SyntheticEvent, param: string): void {
+    e.preventDefault()
+    console.log(e.target, param)
   }
 
   function handleClick2(): void {
@@ -47,13 +48,31 @@ function App(): JSX.Element {
                 hoverOpenDelay={0}
                 content={
                   <Menu>
-                    <MenuItem icon="new-text-box" onClick={e=>handleClick(e, "param1")} text="New text box" />
-                    <MenuItem icon="new-object" onClick={e=>handleClick(e, "param2")} text="New object" />
-                    <MenuItem icon="new-link" onClick={e=>handleClick(e, "param3")} text="New link" />
+                    <MenuItem
+                      icon="new-text-box"
+                      onClick={(e) => handleClick(e, 'param1')}
+                      text="New text box"
+                    />
+                    <MenuItem
+                      icon="new-object"
+                      onClick={(e) => handleClick(e, 'param2')}
+                      text="New object"
+                    />
+                    <MenuItem
+                      icon="new-link"
+                      onClick={(e) => handleClick(e, 'param3')}
+                      text="New link"
+                    />
                   </Menu>}
                 placement="bottom-start"
               >
-                <Button alignText="left" icon="applications" rightIcon="caret-down" text="Edit" minimal={true}/>
+                <Button
+                  alignText="left"
+                  icon="applications"
+                  rightIcon="caret-down"
+                  text="Edit"
+                  minimal={true}
+                />
               </Popover>
             </NavbarGroup>
             <NavbarGroup className="bp5-align-right">
@@ -66,21 +85,29 @@ function App(): JSX.Element {
         </header>
         <aside>
           <Menu>
-            <MenuItem icon="new-text-box" onClick={e=>handleClick(e, "param1")} text="New text box" />
-            <MenuItem icon="new-object" onClick={e=>handleClick(e, "param2")} text="New object" />
-            <MenuItem icon="new-link" onClick={e=>handleClick(e, "param3")} text="New link" />
+            <MenuItem
+              icon="new-text-box"
+              onClick={(e) => handleClick(e, 'param1')}
+              text="New text box"
+            />
+            <MenuItem
+              icon="new-object"
+              onClick={(e) => handleClick(e, 'param2')}
+              text="New object"
+            />
+            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param3')} text="New link" />
             <MenuDivider />
             <MenuItem text="Settings..." icon="cog" intent="primary">
               <MenuItem icon="tick" text="Save on edit" />
               <MenuItem icon="blank" text="Compile on edit" />
             </MenuItem>
             <MenuDivider />
-            <MenuItem icon="new-link" onClick={e=>handleClick(e, "param4")} text="New link4" />
-            <MenuItem icon="new-link" onClick={e=>handleClick(e, "param5")} text="New link5" />
-            <MenuItem icon="new-link" onClick={e=>handleClick(e, "param6")} text="New link6" />
-            <MenuItem icon="new-link" onClick={e=>handleClick(e, "param7")} text="New link7" />
-            <MenuItem icon="new-link" onClick={e=>handleClick(e, "param8")} text="New link8" />
-            <MenuItem icon="new-link" onClick={e=>handleClick(e, "param9")} text="New link9" />
+            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param4')} text="New link4" />
+            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param5')} text="New link5" />
+            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param6')} text="New link6" />
+            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param7')} text="New link7" />
+            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param8')} text="New link8" />
+            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param9')} text="New link9" />
           </Menu>
         </aside>
         <main>
@@ -150,7 +177,7 @@ function App(): JSX.Element {
           </ul>
         </main>
         <footer>
-          <p>&copy; 2024 Inbox</p>
+          <p>&copy; 2024 Bluebox</p>
         </footer>
       </div>
     </>

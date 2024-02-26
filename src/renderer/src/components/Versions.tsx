@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './Version.scss'
 
 function Versions(): JSX.Element {
   const [versions] = useState(window.electron.process.versions)

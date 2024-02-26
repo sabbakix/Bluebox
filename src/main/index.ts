@@ -2,12 +2,13 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+//import fs from 'fs'
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
-    height: 650,
+    height: 600,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -51,6 +52,18 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  /*
+  fs.writeFile("./books.txt", "This is a file containing a collection of books.", (err) => {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log("File written successfully\n")
+      console.log("The written has the following contents:")
+      console.log(fs.readFileSync("./books.txt", "utf8"))
+    }
+  })
+  */
 
   createWindow()
 
