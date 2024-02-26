@@ -63,7 +63,8 @@ function App(): JSX.Element {
                       onClick={(e) => handleClick(e, 'param3')}
                       text="New link"
                     />
-                  </Menu>}
+                  </Menu>
+                }
                 placement="bottom-start"
               >
                 <Button

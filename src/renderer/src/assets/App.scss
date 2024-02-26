@@ -1,4 +1,5 @@
 @import '@blueprintjs/core/lib/scss/variables.scss';
+/*@import './fonts/roboto.css';*/
 
 $border-color: #666;
 $primary-color:$dark-gray1;
@@ -7,6 +8,12 @@ html,
 body {
   margin: 0;
   padding: 0;
+  font-family: sans-serif;
+  /*
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  */
   background-color: $primary-color;
   .logo {
       width: 40px;

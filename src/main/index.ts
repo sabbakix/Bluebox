@@ -2,12 +2,12 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-//import fs from 'fs'
+import * as fs from 'fs'
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 940,
     height: 600,
     show: false,
     autoHideMenuBar: true,
@@ -53,17 +53,27 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
-  /*
-  fs.writeFile("./books.txt", "This is a file containing a collection of books.", (err) => {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log("File written successfully\n")
-      console.log("The written has the following contents:")
-      console.log(fs.readFileSync("./books.txt", "utf8"))
-    }
+  // write json file
+  const config = {
+    ip: '1234.22.11',
+    port: 3000,
+    color: '#333'
+  }
+  const configSerialized = JSON.stringify(config)
+  console.log('config serialized:', configSerialized)
+  console.log('config parsed:', JSON.parse(configSerialized))
+
+  const filePath = join(app.getPath('userData'), 'config.json')
+  fs.writeFile(filePath, configSerialized, (err) => {
+    if (err) throw err
+    console.log(join('File has been written to', filePath)),
+      // Read from the text file
+      fs.readFile(filePath, 'utf-8', (err, contentRead) => {
+        if (err) throw err
+        console.log('File content:', contentRead)
+        console.log(config.color)
+      })
   })
-  */
 
   createWindow()
 

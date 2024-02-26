@@ -4,3 +4,4 @@ out
 .DS_Store
 *.log*
 build
+src/renderer/src/assets/fonts
