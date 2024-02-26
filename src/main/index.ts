@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -74,6 +74,23 @@ app.whenReady().then(() => {
         console.log(config.color)
       })
   })
+
+  // Ipc communication renderer to main
+  function handleSetTitle(event, title): void {
+    const webContents = event.sender
+    const win = BrowserWindow.fromWebContents(webContents)
+    win.setTitle(title)
+  }
+  ipcMain.on('set-title', handleSetTitle)
+
+  // Ipc communication two-way
+  async function handleFileOpen(): any {
+    const { canceled, filePaths } = await dialog.showOpenDialog({})
+    if (!canceled) {
+      return filePaths[0]
+    }
+  }
+  ipcMain.handle('dialog:openFile', handleFileOpen)
 
   createWindow()
 

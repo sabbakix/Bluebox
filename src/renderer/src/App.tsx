@@ -18,8 +18,22 @@ import {
 
 FocusStyleManager.onlyShowFocusOnTabs()
 
+
+
+
+
 function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  const ipc_setTitle = (title): void => window.electron.ipcRenderer.send('set-title', title)
+
+  // Ipc two-way communication
+  async function handleOpenfileClick(): any {
+    console.log('open file fired')
+    const filePath = await window.electron.ipcRenderer.invoke('dialog:openFile')
+    const filePathElement = document.getElementById('path1')
+    filePathElement.innerText = filePath
+  }
+
   const [count, setCount] = useState(0)
 
   function handleClick(e: SyntheticEvent, param: string): void {
@@ -50,13 +64,13 @@ function App(): JSX.Element {
                   <Menu>
                     <MenuItem
                       icon="new-text-box"
-                      onClick={(e) => handleClick(e, 'param1')}
-                      text="New text box"
+                      onClick={() => ipc_setTitle('Ciao')}
+                      text="Cambia titolo in : Ciao"
                     />
                     <MenuItem
                       icon="new-object"
-                      onClick={(e) => handleClick(e, 'param2')}
-                      text="New object"
+                      onClick={() => ipc_setTitle('Hello')}
+                      text="Cambia titolo in: Hello"
                     />
                     <MenuItem
                       icon="new-link"
@@ -103,9 +117,13 @@ function App(): JSX.Element {
               <MenuItem icon="blank" text="Compile on edit" />
             </MenuItem>
             <MenuDivider />
-            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param4')} text="New link4" />
-            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param5')} text="New link5" />
-            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param6')} text="New link6" />
+            <MenuItem
+              icon="new-link"
+              onClick={() => ipc_setTitle('Buongiorno')}
+              text="Buongiorno"
+            />
+            <MenuItem icon="new-link" onClick={() => ipc_setTitle('Buonasera')} text="Buonasera" />
+            <MenuItem icon="new-link" onClick={handleOpenfileClick} text="Open File" />
             <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param7')} text="New link7" />
             <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param8')} text="New link8" />
             <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param9')} text="New link9" />
@@ -145,7 +163,7 @@ function App(): JSX.Element {
           <Versions></Versions>
 
           <ul>
-            <li>1</li>
+            <li id="path1">1</li>
             <li>2</li>
             <li>3r</li>
             <li>4ewrwer</li>
