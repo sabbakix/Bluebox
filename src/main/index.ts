@@ -3,6 +3,27 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as fs from 'fs'
+import sqlite3 from 'sqlite3'
+
+const db = new sqlite3.Database('base.db')
+
+db.serialize(() => {
+  db.run('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)')
+  db.run('INSERT INTO users (name) VALUES ("John Doe")')
+  db.run('INSERT INTO users (name) VALUES ("Smith Stev")')
+  db.run('INSERT INTO users (name) VALUES ("Hola Mika")')
+
+  db.each('SELECT * FROM users', (err, row) => {
+    console.log(row.id, row.name)
+  })
+})
+
+db.close((err) => {
+  if (err) {
+    return console.error(err.message)
+  }
+  console.log('Database connection closed.')
+})
 
 function createWindow(): void {
   // Create the browser window.

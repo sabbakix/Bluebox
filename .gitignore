@@ -5,3 +5,4 @@ out
 *.log*
 build
 src/renderer/src/assets/fonts
+*.db
