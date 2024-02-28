@@ -18,10 +18,6 @@ import {
 
 FocusStyleManager.onlyShowFocusOnTabs()
 
-
-
-
-
 function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
   const ipc_setTitle = (title): void => window.electron.ipcRenderer.send('set-title', title)
@@ -163,9 +159,31 @@ function App(): JSX.Element {
           <Versions></Versions>
 
           <ul>
-            <li id="path1">1</li>
-            <li>2</li>
-            <li>3r</li>
+            <li>
+              Open file: <span id="path1">1</span>
+            </li>
+            <li>APPDATA: {window.electron.process.env['APPDATA']}</li>
+            <li>HOME: {window.electron.process.env['HOME']}</li>
+            <li>HOMEDRIVE: {window.electron.process.env['HOMEDRIVE']}</li>
+            <li>HOSTNAME: {window.electron.process.env['HOSTNAME']}</li>
+            <li>OS: {window.electron.process.env['OS']}</li>
+            <li>TEMP: {window.electron.process.env['TEMP']}</li>
+            <li>USERNAME: {window.electron.process.env['USERNAME']}</li>
+            <li>platform: {window.electron.process.platform}</li>
+
+            <li>4ewrwer</li>
+            <li>
+              ENV:
+              <ul>
+                {Object.keys(window.electron.process.env).map((key) => (
+                  <li key={key}>
+                    {key}: {window.electron.process.env[key]}
+                  </li>
+                ))}
+              </ul>
+            </li>
+            <li>5weriweuroi</li>
+            <li>6ddeewr</li>
             <li>4ewrwer</li>
             <li>5weriweuroi</li>
             <li>6ddeewr</li>
