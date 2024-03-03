@@ -20,14 +20,3 @@ if (process.contextIsolated) {
   // @ts-ignore (define in dts)
   window.api = api
 }
-
-/*
-contextBridge.exposeInMainWorld('electronCOM', {
-  setTitle: (title) => ipcRenderer.send('set-title', title),
-  ping: () => ipcRenderer.send('ping')
-})
-
-contextBridge.exposeInMainWorld('electronCOM', {
-  openFile: () => ipcRenderer.invoke('dialog:openFile')
-})
-*/

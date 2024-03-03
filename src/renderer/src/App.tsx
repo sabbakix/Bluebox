@@ -16,20 +16,11 @@ import {
   Popover
 } from '@blueprintjs/core'
 
+// hide focus outine on buttons
 FocusStyleManager.onlyShowFocusOnTabs()
 
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-  const ipc_setTitle = (title): void => window.electron.ipcRenderer.send('set-title', title)
-
-  // Ipc two-way communication
-  async function handleOpenfileClick(): any {
-    console.log('open file fired')
-    const filePath = await window.electron.ipcRenderer.invoke('dialog:openFile')
-    const filePathElement = document.getElementById('path1')
-    filePathElement.innerText = filePath
-  }
-
+  // Simple react state
   const [count, setCount] = useState(0)
 
   function handleClick(e: SyntheticEvent, param: string): void {
@@ -40,6 +31,42 @@ function App(): JSX.Element {
   function handleClick2(): void {
     setCount(count + 1)
   }
+
+  /***********************
+        IPC channels 
+   ***********************/
+  // Pattern 1: Renderer to main (one-way)
+  function ipcHandle(): void {
+    return window.electron.ipcRenderer.send('ping')
+  }
+  const ipc_setTitle = (title: string): void => window.electron.ipcRenderer.send('set-title', title)
+
+  // Pattern 2: Renderer to main (two-way)
+  async function handleOpenfileClick(): Promise<boolean> {
+    console.log('open file fired')
+    const filePath = await window.electron.ipcRenderer.invoke('dialog:openFile')
+    const filePathElement = document.getElementById('path1')
+    if (filePathElement) {
+      {
+        filePathElement.innerText = filePath
+      }
+    }
+    return true
+  }
+
+  // Pattern 3: Main to renderer
+  // Receive messages from the main process
+  window.electron.ipcRenderer.on('update-counter', (_, args) => {
+    console.log('update-counter', args)
+    const counter = document.getElementById('counter')
+    if (counter) {
+      const oldValue = Number(counter.innerText)
+      const newValue = oldValue + args
+      counter.innerText = newValue.toString()
+    } else {
+      console.log('no counter')
+    }
+  })
 
   return (
     <>
@@ -130,6 +157,9 @@ function App(): JSX.Element {
           <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
             count:{count}
           </Button>
+          <p>
+            Current value: <strong id="counter">0</strong>
+          </p>
           <img alt="logo" className="logo" src={electronLogo} />
           <div className="creator">Powered by electron-vite</div>
           <div className="text">

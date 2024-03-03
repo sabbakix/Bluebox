@@ -4,12 +4,13 @@ import '@blueprintjs/datetime2/lib/css/blueprint-datetime2.css'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 import '@blueprintjs/table/lib/css/table.css'
 
-import React from 'react'
+//import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />)
+/*
   <React.StrictMode>
     <App />
   </React.StrictMode>
-)
+*/

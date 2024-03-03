@@ -6,3 +6,4 @@ out
 build
 src/renderer/src/assets/fonts
 *.db
+*.sql
