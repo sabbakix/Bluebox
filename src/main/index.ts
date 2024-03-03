@@ -101,26 +101,22 @@ function createWindow(): void {
   console.log(app.getPath('appData'))
   console.log('packaged:', app.isPackaged)
 
-  const options = {
-    type: 'question',
-    buttons: ['Cancel', 'Yes, please', 'No, thanks'],
-    defaultId: 2,
-    title: 'Question',
-    message: 'Do you want to do this?',
-    detail: 'It does not really matter',
-    checkboxLabel: 'Remember my answer',
-    checkboxChecked: true
-  }
+  const text = 'Ciao ciao'
   showMessage(mainWindow, text)
 }
 
 // Example of using dialog.showMessageBox
 function showMessage(mainWindow, text: string): boolean {
+
   const options = {
-    type: 'info',
-    title: 'Information',
-    message: text,
-    buttons: ['OK']
+    type: 'question',
+    //buttons: ['Cancel', 'Yes, please', 'No, thanks'],
+    defaultId: 2,
+    title: 'Question',
+    message: 'Message: ' + text,
+    detail: 'It does not really matter',
+    checkboxLabel: 'Remember my answer',
+    checkboxChecked: true
   }
 
   dialog.showMessageBox(mainWindow, options)
