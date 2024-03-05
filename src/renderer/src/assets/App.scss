@@ -61,3 +61,10 @@ body {
     text-align: right;
     border-top: solid 1px $border-color;
   }
+
+  .page-hide {
+    display: none;
+  }
+  .page-show {
+    display: block;
+  }

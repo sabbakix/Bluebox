@@ -101,25 +101,17 @@ function createWindow(): void {
   console.log(app.getPath('appData'))
   console.log('packaged:', app.isPackaged)
 
-  const text = 'Ciao ciao'
-  showMessage(mainWindow, text)
+  showMessage(mainWindow, 'Ciao ciao')
 }
 
 // Example of using dialog.showMessageBox
 function showMessage(mainWindow, text: string): boolean {
-
-  const options = {
-    type: 'question',
-    //buttons: ['Cancel', 'Yes, please', 'No, thanks'],
-    defaultId: 2,
-    title: 'Question',
-    message: 'Message: ' + text,
-    detail: 'It does not really matter',
-    checkboxLabel: 'Remember my answer',
-    checkboxChecked: true
-  }
-
-  dialog.showMessageBox(mainWindow, options)
+  dialog.showMessageBox(mainWindow, {
+    type: 'info',
+    title: 'Information',
+    message: text,
+    buttons: ['OK']
+  })
   return true
 }
 // This method will be called when Electron has finished

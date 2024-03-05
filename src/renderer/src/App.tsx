@@ -32,6 +32,24 @@ function App(): JSX.Element {
     setCount(count + 1)
   }
 
+  // show/hide pages
+  function showPage(e: SyntheticEvent, id: string): void {
+    e.preventDefault()
+    // hide al pages
+    const pages = document.getElementsByClassName('page') // Creates an HTMLObjectList not an array.
+    Array.prototype.forEach.call(pages, function (page) {
+      page.classList.remove('page-show')
+      page.classList.add('page-hide')
+      //console.log('page:', page)
+    })
+    // show selected page
+    const activePage = document.getElementById(id)
+    if (activePage) {
+      activePage.classList.remove('page-hide')
+      activePage.classList.add('page-show')
+    }
+  }
+
   /***********************
         IPC channels 
    ***********************/
@@ -134,114 +152,114 @@ function App(): JSX.Element {
               text="New object"
             />
             <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param3')} text="New link" />
+            <MenuItem icon="new-link" onClick={handleOpenfileClick} text="Open File" />
             <MenuDivider />
-            <MenuItem text="Settings..." icon="cog" intent="primary">
-              <MenuItem icon="tick" text="Save on edit" />
-              <MenuItem icon="blank" text="Compile on edit" />
+            <MenuItem text="Imposta Titolo" icon="cog" intent="primary">
+              <MenuItem icon="tick" text="Buongiorno" onClick={() => ipc_setTitle('Buongiorno')} />
+              <MenuItem icon="blank" text="Buonasera" onClick={() => ipc_setTitle('Buonasera')} />
+              <MenuItem icon="blank" text="Hello" onClick={() => ipc_setTitle('Hello')} />
             </MenuItem>
             <MenuDivider />
-            <MenuItem
-              icon="new-link"
-              onClick={() => ipc_setTitle('Buongiorno')}
-              text="Buongiorno"
-            />
-            <MenuItem icon="new-link" onClick={() => ipc_setTitle('Buonasera')} text="Buonasera" />
-            <MenuItem icon="new-link" onClick={handleOpenfileClick} text="Open File" />
-            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param7')} text="New link7" />
-            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param8')} text="New link8" />
+            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page1')} text="Main" />
+            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page2')} text="page2" />
             <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param9')} text="New link9" />
           </Menu>
         </aside>
         <main>
-          <h2>Main Content</h2>
-          <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
-            count:{count}
-          </Button>
-          <p>
-            Current value: <strong id="counter">0</strong>
-          </p>
-          <img alt="logo" className="logo" src={electronLogo} />
-          <div className="creator">Powered by electron-vite</div>
-          <div className="text">
-            Build an Electron app with <span className="react">React</span>
-            &nbsp;and <span className="ts">TypeScript</span>
-          </div>
-          <div>
-            <Button className="button" onClick={handleClick2} text="Hello ">
-              {count}
+          <div id="page1" className="page page-show">
+            <h2>Main Content</h2>
+            <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
+              count:{count}
             </Button>
-          </div>
-          <p className="tip">
-            Please try pressing <code>F12</code> to open the devTool
-          </p>
-          <div className="actions">
-            <div className="action">
-              <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-                Documentation
-              </a>
+            <p>
+              Current value: <strong id="counter">0</strong>
+            </p>
+            <img alt="logo" className="logo" src={electronLogo} />
+            <div className="creator">Powered by electron-vite</div>
+            <div className="text">
+              Build an Electron app with <span className="react">React</span>
+              &nbsp;and <span className="ts">TypeScript</span>
             </div>
-            <div className="action">
-              <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-                Send IPC
-              </a>
+            <div>
+              <Button className="button" onClick={handleClick2} text="Hello ">
+                {count}
+              </Button>
             </div>
+            <p className="tip">
+              Please try pressing <code>F12</code> to open the devTool
+            </p>
+            <div className="actions">
+              <div className="action">
+                <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
+                  Documentation
+                </a>
+              </div>
+              <div className="action">
+                <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
+                  Send IPC
+                </a>
+              </div>
+            </div>
+            <Versions></Versions>
+
+            <ul>
+              <li>
+                Open file: <span id="path1">1</span>
+              </li>
+              <li>APPDATA: {window.electron.process.env['APPDATA']}</li>
+              <li>HOME: {window.electron.process.env['HOME']}</li>
+              <li>HOMEDRIVE: {window.electron.process.env['HOMEDRIVE']}</li>
+              <li>HOSTNAME: {window.electron.process.env['HOSTNAME']}</li>
+              <li>OS: {window.electron.process.env['OS']}</li>
+              <li>TEMP: {window.electron.process.env['TEMP']}</li>
+              <li>USERNAME: {window.electron.process.env['USERNAME']}</li>
+              <li>platform: {window.electron.process.platform}</li>
+
+              <li>4ewrwer</li>
+              <li>
+                ENV:
+                <ul>
+                  {Object.keys(window.electron.process.env).map((key) => (
+                    <li key={key}>
+                      {key}: {window.electron.process.env[key]}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+              <li>5weriweuroi</li>
+              <li>6ddeewr</li>
+              <li>4ewrwer</li>
+              <li>5weriweuroi</li>
+              <li>6ddeewr</li>
+              <li>7ddf</li>
+              <li>8x</li>
+              <li>1</li>
+              <li>2</li>
+              <li>3r</li>
+              <li>4ewrwer</li>
+              <li>5weriweuroi</li>
+              <li>6ddeewr</li>
+              <li>7ddf</li>
+              <li>8x</li>
+              <li>3r</li>
+              <li>4ewrwer</li>
+              <li>5weriweuroi</li>
+              <li>6ddeewr</li>
+              <li>7ddf</li>
+              <li>8x</li>
+              <li>1</li>
+              <li>2</li>
+              <li>3r</li>
+              <li>4ewrwer</li>
+              <li>5weriweuroi</li>
+              <li>6ddeewr</li>
+              <li>7ddf</li>
+              <li>fine</li>
+            </ul>
           </div>
-          <Versions></Versions>
-
-          <ul>
-            <li>
-              Open file: <span id="path1">1</span>
-            </li>
-            <li>APPDATA: {window.electron.process.env['APPDATA']}</li>
-            <li>HOME: {window.electron.process.env['HOME']}</li>
-            <li>HOMEDRIVE: {window.electron.process.env['HOMEDRIVE']}</li>
-            <li>HOSTNAME: {window.electron.process.env['HOSTNAME']}</li>
-            <li>OS: {window.electron.process.env['OS']}</li>
-            <li>TEMP: {window.electron.process.env['TEMP']}</li>
-            <li>USERNAME: {window.electron.process.env['USERNAME']}</li>
-            <li>platform: {window.electron.process.platform}</li>
-
-            <li>4ewrwer</li>
-            <li>
-              ENV:
-              <ul>
-                {Object.keys(window.electron.process.env).map((key) => (
-                  <li key={key}>
-                    {key}: {window.electron.process.env[key]}
-                  </li>
-                ))}
-              </ul>
-            </li>
-            <li>5weriweuroi</li>
-            <li>6ddeewr</li>
-            <li>4ewrwer</li>
-            <li>5weriweuroi</li>
-            <li>6ddeewr</li>
-            <li>7ddf</li>
-            <li>8x</li>
-            <li>1</li>
-            <li>2</li>
-            <li>3r</li>
-            <li>4ewrwer</li>
-            <li>5weriweuroi</li>
-            <li>6ddeewr</li>
-            <li>7ddf</li>
-            <li>8x</li>
-            <li>3r</li>
-            <li>4ewrwer</li>
-            <li>5weriweuroi</li>
-            <li>6ddeewr</li>
-            <li>7ddf</li>
-            <li>8x</li>
-            <li>1</li>
-            <li>2</li>
-            <li>3r</li>
-            <li>4ewrwer</li>
-            <li>5weriweuroi</li>
-            <li>6ddeewr</li>
-            <li>7ddf</li>
-            <li>fine</li>
-          </ul>
+          <div id="page2" className="page page-hide">
+            <h2> page 2 </h2>
+          </div>
         </main>
         <footer>
           <p>&copy; 2024 Bluebox</p>
