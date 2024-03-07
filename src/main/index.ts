@@ -95,15 +95,18 @@ function createWindow(): void {
   }
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools()
+  }
 
   // test dev environment
   console.log(app.getPath('appData'))
   console.log('packaged:', app.isPackaged)
 
-  showMessage(mainWindow, 'Ciao ciao')
+  //showMessage(mainWindow, 'app.isPackaged:' + app.isPackaged)
 }
 
+/*
 // Example of using dialog.showMessageBox
 function showMessage(mainWindow, text: string): boolean {
   dialog.showMessageBox(mainWindow, {
@@ -114,6 +117,7 @@ function showMessage(mainWindow, text: string): boolean {
   })
   return true
 }
+*/
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.

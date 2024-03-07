@@ -20,19 +20,7 @@ import {
 FocusStyleManager.onlyShowFocusOnTabs()
 
 function App(): JSX.Element {
-  // Simple react state
-  const [count, setCount] = useState(0)
-
-  function handleClick(e: SyntheticEvent, param: string): void {
-    e.preventDefault()
-    console.log(e.target, param)
-  }
-
-  function handleClick2(): void {
-    setCount(count + 1)
-  }
-
-  // show/hide pages
+  // show/hide pages //
   function showPage(e: SyntheticEvent, id: string): void {
     e.preventDefault()
     // hide al pages
@@ -50,9 +38,19 @@ function App(): JSX.Element {
     }
   }
 
-  /***********************
-        IPC channels 
-   ***********************/
+  // Simple react state
+  const [count, setCount] = useState(0)
+
+  function handleClick(e: SyntheticEvent, param: string): void {
+    e.preventDefault()
+    console.log(e.target, param)
+  }
+
+  function handleClick2(): void {
+    setCount(count + 1)
+  }
+
+  //      IPC channels
   // Pattern 1: Renderer to main (one-way)
   function ipcHandle(): void {
     return window.electron.ipcRenderer.send('ping')
