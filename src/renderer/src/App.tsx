@@ -20,7 +20,9 @@ import {
 FocusStyleManager.onlyShowFocusOnTabs()
 
 function App(): JSX.Element {
+  //
   // show/hide pages //
+  //
   function showPage(e: SyntheticEvent, id: string): void {
     e.preventDefault()
     // hide al pages
@@ -38,7 +40,9 @@ function App(): JSX.Element {
     }
   }
 
+  //
   // Simple react state
+  //
   const [count, setCount] = useState(0)
 
   function handleClick(e: SyntheticEvent, param: string): void {
@@ -50,7 +54,9 @@ function App(): JSX.Element {
     setCount(count + 1)
   }
 
+  //
   //      IPC channels
+  //
   // Pattern 1: Renderer to main (one-way)
   function ipcHandle(): void {
     return window.electron.ipcRenderer.send('ping')
@@ -160,7 +166,8 @@ function App(): JSX.Element {
             <MenuDivider />
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page1')} text="Main" />
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page2')} text="page2" />
-            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param9')} text="New link9" />
+            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page3')} text="page3" />
+            <MenuItem icon="comment" onClick={(e) => handleClick(e, 'param9')} text="New link9" />
           </Menu>
         </aside>
         <main>
@@ -257,6 +264,9 @@ function App(): JSX.Element {
           </div>
           <div id="page2" className="page page-hide">
             <h2> page 2 </h2>
+          </div>
+          <div id="page3" className="page page-show">
+            <h2>Page 3 </h2>
           </div>
         </main>
         <footer>
