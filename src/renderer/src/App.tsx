@@ -89,6 +89,9 @@ function App(): JSX.Element {
       console.log('no counter')
     }
   })
+  window.electron.ipcRenderer.on('slog', (_, args) => {
+    console.log('slog: ', args)
+  })
 
   return (
     <>

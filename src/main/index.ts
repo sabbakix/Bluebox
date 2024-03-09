@@ -1,12 +1,17 @@
-import { app, shell, BrowserWindow, Menu, ipcMain, dialog } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog } from 'electron' // Menu
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as fs from 'fs'
 import sqlite3 from 'sqlite3'
 
+//
 // Sqlite database
+//
 const db = new sqlite3.Database('base.db')
+if (db) {
+  console.log('Database connection open.')
+}
 
 db.serialize(() => {
   db.run('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)')
@@ -14,13 +19,13 @@ db.serialize(() => {
   db.run('INSERT INTO users (name) VALUES ("Smith Stev")')
   db.run('INSERT INTO users (name) VALUES ("Hola Mika")')
 
-  db.each('SELECT * FROM users', (err, row) => {
-    console.log(
-      (row as { id: string; name: string }).id,
-      (row as { id: string; name: string }).name
-    )
-    if (err) throw err
-  })
+  // db.each('SELECT * FROM users', (err, row) => {
+  //   console.log(
+  //     (row as { id: string; name: string }).id,
+  //     (row as { id: string; name: string }).name
+  //   )
+  //   if (err) throw err
+  // })
 })
 
 db.close((err) => {
@@ -36,7 +41,7 @@ function createWindow(): void {
     width: 940,
     height: 600,
     show: false,
-    autoHideMenuBar: false,
+    autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -44,47 +49,59 @@ function createWindow(): void {
     }
   })
 
-  const menu = Menu.buildFromTemplate([
-    {
-      label: 'File',
-      submenu: [
-        {
-          click: () => mainWindow.webContents.send('update-counter', 1),
-          label: 'Increment',
-          icon: 'resources/menu-icons/increment.png'
-        },
-        {
-          click: () => mainWindow.webContents.send('update-counter', -1),
-          label: 'Decrement',
-          icon: 'resources/menu-icons/decrement.png'
-        }
-      ]
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          click: () => mainWindow.webContents.send('update-counter', 1),
-          label: 'Copy'
-        },
-        {
-          click: () => mainWindow.webContents.send('update-counter', -1),
-          label: 'Paste'
-        }
-      ]
-    }
-  ])
+  //
+  // Native Menu
+  //
+  // const menu = Menu.buildFromTemplate([
+  //   {
+  //     label: 'File',
+  //     submenu: [
+  //       {
+  //         click: () => mainWindow.webContents.send('update-counter', 1),
+  //         label: 'Increment',
+  //         icon: 'resources/menu-icons/increment.png'
+  //       },
+  //       {
+  //         click: () => mainWindow.webContents.send('update-counter', -1),
+  //         label: 'Decrement',
+  //         icon: 'resources/menu-icons/decrement.png'
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     label: 'Edit',
+  //     submenu: [
+  //       {
+  //         click: () => mainWindow.webContents.send('update-counter', 1),
+  //         label: 'Copy'
+  //       },
+  //       {
+  //         click: () => mainWindow.webContents.send('update-counter', -1),
+  //         label: 'Paste'
+  //       }
+  //     ]
+  //   }
+  // ])
+  // Menu.setApplicationMenu(menu)
 
-  Menu.setApplicationMenu(menu)
+  // Ipc communication main to render
+  function slog(slog: string): void {
+    mainWindow.webContents.send('update-counter', slog)
+  }
+
+  slog('hello world')
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
+  //
+  // open esternl Link
+  //
+  // mainWindow.webContents.setWindowOpenHandler((details) => {
+  //   shell.openExternal(details.url)
+  //   return { action: 'deny' }
+  // })
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
@@ -95,13 +112,11 @@ function createWindow(): void {
   }
 
   // Open the DevTools.
-  if (!app.isPackaged) {
+  if (is.dev) {
+    mainWindow.webContents.openDevTools()
+  } else {
     mainWindow.webContents.openDevTools()
   }
-
-  // test dev environment
-  console.log(app.getPath('appData'))
-  console.log('packaged:', app.isPackaged)
 
   //showMessage(mainWindow, 'app.isPackaged:' + app.isPackaged)
 }
@@ -118,6 +133,7 @@ function showMessage(mainWindow, text: string): boolean {
   return true
 }
 */
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -132,10 +148,9 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-
+  //
   // write json file
+  //
   const config = {
     ip: '1234.22.11',
     port: 3000,
@@ -157,6 +172,13 @@ app.whenReady().then(() => {
       })
   })
 
+  //
+  // IPC communication
+  //
+
+  // Ipc communication renderer to main
+  ipcMain.on('ping', () => console.log('pong'))
+
   // Ipc communication renderer to main
   function handleSetTitle(event, title): void {
     const webContents = event.sender
@@ -167,7 +189,7 @@ app.whenReady().then(() => {
   }
   ipcMain.on('set-title', handleSetTitle)
 
-  // Ipc communication two-way
+  // Ipc communication renderer to main two-way
   async function handleFileOpen(): Promise<string> {
     const { canceled, filePaths } = await dialog.showOpenDialog({})
     if (!canceled) {
