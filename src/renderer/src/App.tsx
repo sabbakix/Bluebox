@@ -58,16 +58,16 @@ function App(): JSX.Element {
   //      IPC channels
   //
   // Pattern 1: Renderer to main (one-way)
-  function ipcHandle(): void {
+  function ipcHandleRendToMain1way(): void {
     return window.electron.ipcRenderer.send('ping')
   }
   const ipc_setTitle = (title: string): void => window.electron.ipcRenderer.send('set-title', title)
 
   // Pattern 2: Renderer to main (two-way)
-  async function handleOpenfileClick(): Promise<boolean> {
+  async function ipcHandleRendToMain2way(): Promise<boolean> {
     console.log('open file fired')
     const filePath = await window.electron.ipcRenderer.invoke('dialog:openFile')
-    const filePathElement = document.getElementById('path1')
+    const filePathElement = document.getElementById('filepath')
     if (filePathElement) {
       {
         filePathElement.innerText = filePath
@@ -78,19 +78,12 @@ function App(): JSX.Element {
 
   // Pattern 3: Main to renderer
   // Receive messages from the main process
-  window.electron.ipcRenderer.on('update-counter', (_, args) => {
-    console.log('update-counter', args)
-    const counter = document.getElementById('counter')
-    if (counter) {
-      const oldValue = Number(counter.innerText)
-      const newValue = oldValue + args
-      counter.innerText = newValue.toString()
-    } else {
-      console.log('no counter')
+  window.electron.ipcRenderer.on('message-m2r', (_, args) => {
+    console.log('message-m2r: ', args)
+    const elem = document.getElementById('message-from-main')
+    if (elem) {
+      elem.innerText = args
     }
-  })
-  window.electron.ipcRenderer.on('slog', (_, args) => {
-    console.log('slog: ', args)
   })
 
   return (
@@ -150,6 +143,21 @@ function App(): JSX.Element {
           <Menu>
             <MenuItem
               icon="new-text-box"
+              onClick={(e) => showPage(e, 'page-set-state')}
+              text="Set state"
+            />
+            <MenuItem
+              icon="new-text-box"
+              onClick={(e) => showPage(e, 'page-ipc-com')}
+              text="Ipc Communication"
+            />
+            <MenuItem
+              icon="new-text-box"
+              onClick={(e) => showPage(e, 'page-env-vars')}
+              text="Environment Vars"
+            />
+            <MenuItem
+              icon="new-text-box"
               onClick={(e) => handleClick(e, 'param1')}
               text="New text box"
             />
@@ -159,22 +167,106 @@ function App(): JSX.Element {
               text="New object"
             />
             <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param3')} text="New link" />
-            <MenuItem icon="new-link" onClick={handleOpenfileClick} text="Open File" />
-            <MenuDivider />
-            <MenuItem text="Imposta Titolo" icon="cog" intent="primary">
-              <MenuItem icon="tick" text="Buongiorno" onClick={() => ipc_setTitle('Buongiorno')} />
-              <MenuItem icon="blank" text="Buonasera" onClick={() => ipc_setTitle('Buonasera')} />
-              <MenuItem icon="blank" text="Hello" onClick={() => ipc_setTitle('Hello')} />
-            </MenuItem>
-            <MenuDivider />
+            <MenuItem icon="new-link" onClick={ipcHandleRendToMain2way} text="Open File" />
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page1')} text="Main" />
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page2')} text="page2" />
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page3')} text="page3" />
+            <MenuDivider />
+            <MenuItem text="Imposta Titolo" icon="cog" intent="primary">
+              <MenuItem
+                icon="tick"
+                text="Set Title Bluebox"
+                onClick={() => ipc_setTitle('Bluebox')}
+              />
+              <MenuItem icon="blank" text="Set Title _box" onClick={() => ipc_setTitle('_box')} />
+            </MenuItem>
+            <MenuDivider />
+
             <MenuItem icon="comment" onClick={(e) => handleClick(e, 'param9')} text="New link9" />
           </Menu>
         </aside>
         <main>
-          <div id="page1" className="page page-show">
+          <div id="page-set-state" className="page page-hide">
+            <h2>page-set-state</h2>
+            <ul>
+              <li>
+                <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
+                  count:{count}
+                </Button>
+                <br />
+                <br />
+              </li>
+              <li>
+                <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
+                  count:{count}
+                </Button>
+                <br />
+                <br />
+              </li>
+              <li>
+                <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
+                  count:{count}
+                </Button>
+                <br />
+                <br />
+              </li>
+              <li>{count}</li>
+            </ul>
+          </div>
+          <div id="page-ipc-com" className="page page-hide">
+            <h2>page-ipc-com</h2>
+            <ul>
+              <li>
+                <h4>Render to main one-way</h4>
+                <p>
+                  <Button icon="send-message" onClick={ipcHandleRendToMain1way}>
+                    Send Ping
+                  </Button>
+                </p>
+              </li>
+              <li>
+                <h4>Render to main two-way</h4>
+                <p>
+                  <Button icon="send-message" onClick={ipcHandleRendToMain2way}>
+                    Open File
+                  </Button>
+                </p>
+                <p>
+                  File Path: <span id="filepath"></span>
+                </p>
+              </li>
+              <li>
+                <h4>Main to render one-way</h4>
+                <p>
+                  Message from moan process: <span id="message-from-main"></span>
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div id="page-env-vars" className="page page-show">
+            <h2>page-env-vars</h2>
+            <ul>
+              <li>APPDATA: {window.electron.process.env['APPDATA']}</li>
+              <li>HOME: {window.electron.process.env['HOME']}</li>
+              <li>HOMEDRIVE: {window.electron.process.env['HOMEDRIVE']}</li>
+              <li>HOSTNAME: {window.electron.process.env['HOSTNAME']}</li>
+              <li>OS: {window.electron.process.env['OS']}</li>
+              <li>TEMP: {window.electron.process.env['TEMP']}</li>
+              <li>USERNAME: {window.electron.process.env['USERNAME']}</li>
+              <li>platform: {window.electron.process.platform}</li>
+              <li>
+                ENV:
+                <ul>
+                  {Object.keys(window.electron.process.env).map((key) => (
+                    <li key={key}>
+                      {key}: {window.electron.process.env[key]}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div id="page1" className="page page-hide">
             <h2>Main Content</h2>
             <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
               count:{count}
@@ -202,73 +294,13 @@ function App(): JSX.Element {
                   Documentation
                 </a>
               </div>
-              <div className="action">
-                <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-                  Send IPC
-                </a>
-              </div>
             </div>
             <Versions></Versions>
-
-            <ul>
-              <li>
-                Open file: <span id="path1">1</span>
-              </li>
-              <li>APPDATA: {window.electron.process.env['APPDATA']}</li>
-              <li>HOME: {window.electron.process.env['HOME']}</li>
-              <li>HOMEDRIVE: {window.electron.process.env['HOMEDRIVE']}</li>
-              <li>HOSTNAME: {window.electron.process.env['HOSTNAME']}</li>
-              <li>OS: {window.electron.process.env['OS']}</li>
-              <li>TEMP: {window.electron.process.env['TEMP']}</li>
-              <li>USERNAME: {window.electron.process.env['USERNAME']}</li>
-              <li>platform: {window.electron.process.platform}</li>
-
-              <li>4ewrwer</li>
-              <li>
-                ENV:
-                <ul>
-                  {Object.keys(window.electron.process.env).map((key) => (
-                    <li key={key}>
-                      {key}: {window.electron.process.env[key]}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-              <li>5weriweuroi</li>
-              <li>6ddeewr</li>
-              <li>4ewrwer</li>
-              <li>5weriweuroi</li>
-              <li>6ddeewr</li>
-              <li>7ddf</li>
-              <li>8x</li>
-              <li>1</li>
-              <li>2</li>
-              <li>3r</li>
-              <li>4ewrwer</li>
-              <li>5weriweuroi</li>
-              <li>6ddeewr</li>
-              <li>7ddf</li>
-              <li>8x</li>
-              <li>3r</li>
-              <li>4ewrwer</li>
-              <li>5weriweuroi</li>
-              <li>6ddeewr</li>
-              <li>7ddf</li>
-              <li>8x</li>
-              <li>1</li>
-              <li>2</li>
-              <li>3r</li>
-              <li>4ewrwer</li>
-              <li>5weriweuroi</li>
-              <li>6ddeewr</li>
-              <li>7ddf</li>
-              <li>fine</li>
-            </ul>
           </div>
           <div id="page2" className="page page-hide">
             <h2> page 2 </h2>
           </div>
-          <div id="page3" className="page page-show">
+          <div id="page3" className="page page-hide">
             <h2>Page 3 </h2>
           </div>
         </main>

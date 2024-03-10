@@ -38,8 +38,8 @@ db.close((err) => {
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 940,
-    height: 600,
+    width: 980,
+    height: 700,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -49,47 +49,13 @@ function createWindow(): void {
     }
   })
 
-  //
-  // Native Menu
-  //
-  // const menu = Menu.buildFromTemplate([
-  //   {
-  //     label: 'File',
-  //     submenu: [
-  //       {
-  //         click: () => mainWindow.webContents.send('update-counter', 1),
-  //         label: 'Increment',
-  //         icon: 'resources/menu-icons/increment.png'
-  //       },
-  //       {
-  //         click: () => mainWindow.webContents.send('update-counter', -1),
-  //         label: 'Decrement',
-  //         icon: 'resources/menu-icons/decrement.png'
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     label: 'Edit',
-  //     submenu: [
-  //       {
-  //         click: () => mainWindow.webContents.send('update-counter', 1),
-  //         label: 'Copy'
-  //       },
-  //       {
-  //         click: () => mainWindow.webContents.send('update-counter', -1),
-  //         label: 'Paste'
-  //       }
-  //     ]
-  //   }
-  // ])
-  // Menu.setApplicationMenu(menu)
-
   // Ipc communication main to render
-  function slog(slog: string): void {
-    mainWindow.webContents.send('update-counter', slog)
+  function sendMessageToRender(message: string): void {
+    const timestamp = Date.now()
+    message = 'Hello from main timestamp:' + timestamp.toString()
+    mainWindow.webContents.send('message-m2r', message)
   }
-
-  slog('hello world')
+  setInterval(sendMessageToRender, 1000)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -177,7 +143,10 @@ app.whenReady().then(() => {
   //
 
   // Ipc communication renderer to main
-  ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.on('ping', () => {
+    const timestamp = Date.now()
+    console.log('pong:', timestamp)
+  })
 
   // Ipc communication renderer to main
   function handleSetTitle(event, title): void {
@@ -199,6 +168,8 @@ app.whenReady().then(() => {
     }
   }
   ipcMain.handle('dialog:openFile', handleFileOpen)
+
+
 
   createWindow()
 
