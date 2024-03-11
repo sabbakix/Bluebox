@@ -21,23 +21,14 @@ FocusStyleManager.onlyShowFocusOnTabs()
 
 function App(): JSX.Element {
   //
-  // show/hide pages //
+  // show/hide pages
   //
+  const [activeLink, setActiveLink] = useState('page-set-state')
+
   function showPage(e: SyntheticEvent, id: string): void {
     e.preventDefault()
-    // hide al pages
-    const pages = document.getElementsByClassName('page') // Creates an HTMLObjectList not an array.
-    Array.prototype.forEach.call(pages, function (page) {
-      page.classList.remove('page-show')
-      page.classList.add('page-hide')
-      //console.log('page:', page)
-    })
-    // show selected page
-    const activePage = document.getElementById(id)
-    if (activePage) {
-      activePage.classList.remove('page-hide')
-      activePage.classList.add('page-show')
-    }
+    setActiveLink(id)
+    console.log('showPage', e.nativeEvent)
   }
 
   //
@@ -45,9 +36,10 @@ function App(): JSX.Element {
   //
   const [count, setCount] = useState(0)
 
-  function handleClick(e: SyntheticEvent, param: string): void {
+  function handleClick_incrementCount(e: SyntheticEvent, param: string): void {
     e.preventDefault()
     console.log(e.target, param)
+    setCount(count + 1)
   }
 
   function handleClick2(): void {
@@ -79,7 +71,7 @@ function App(): JSX.Element {
   // Pattern 3: Main to renderer
   // Receive messages from the main process
   window.electron.ipcRenderer.on('message-m2r', (_, args) => {
-    console.log('message-m2r: ', args)
+    //console.log('message-m2r: ', args)
     const elem = document.getElementById('message-from-main')
     if (elem) {
       elem.innerText = args
@@ -115,7 +107,7 @@ function App(): JSX.Element {
                     />
                     <MenuItem
                       icon="new-link"
-                      onClick={(e) => handleClick(e, 'param3')}
+                      onClick={(e) => handleClick_incrementCount(e, 'param3')}
                       text="New link"
                     />
                   </Menu>
@@ -145,34 +137,26 @@ function App(): JSX.Element {
               icon="new-text-box"
               onClick={(e) => showPage(e, 'page-set-state')}
               text="Set state"
+              active={activeLink === 'page-set-state' ? true : false}
             />
             <MenuItem
               icon="new-text-box"
               onClick={(e) => showPage(e, 'page-ipc-com')}
               text="Ipc Communication"
-            />
-            <MenuItem
-              icon="new-text-box"
-              onClick={(e) => showPage(e, 'page-env-vars')}
-              text="Environment Vars"
-            />
-            <MenuItem
-              icon="new-text-box"
-              onClick={(e) => handleClick(e, 'param1')}
-              text="New text box"
+              active={activeLink === 'page-ipc-com' ? true : false}
             />
             <MenuItem
               icon="new-object"
-              onClick={(e) => handleClick(e, 'param2')}
-              text="New object"
+              onClick={(e) => showPage(e, 'page-env-vars')}
+              text="Environment Vars"
+              active={activeLink === 'page-env-vars' ? true : false}
             />
-            <MenuItem icon="new-link" onClick={(e) => handleClick(e, 'param3')} text="New link" />
-            <MenuItem icon="new-link" onClick={ipcHandleRendToMain2way} text="Open File" />
+
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page1')} text="Main" />
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page2')} text="page2" />
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page3')} text="page3" />
             <MenuDivider />
-            <MenuItem text="Imposta Titolo" icon="cog" intent="primary">
+            <MenuItem text="Imposta Titolo" icon="cog">
               <MenuItem
                 icon="tick"
                 text="Set Title Bluebox"
@@ -181,30 +165,31 @@ function App(): JSX.Element {
               <MenuItem icon="blank" text="Set Title _box" onClick={() => ipc_setTitle('_box')} />
             </MenuItem>
             <MenuDivider />
-
-            <MenuItem icon="comment" onClick={(e) => handleClick(e, 'param9')} text="New link9" />
           </Menu>
         </aside>
         <main>
-          <div id="page-set-state" className="page page-hide">
+          <div
+            id="page-set-state"
+            className={activeLink === 'page-set-state' ? 'page-show' : 'page-hide'}
+          >
             <h2>page-set-state</h2>
             <ul>
               <li>
-                <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
+                <Button icon="refresh" onClick={(e) => handleClick_incrementCount(e, '')}>
                   count:{count}
                 </Button>
                 <br />
                 <br />
               </li>
               <li>
-                <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
+                <Button icon="refresh" onClick={(e) => handleClick_incrementCount(e, '')}>
                   count:{count}
                 </Button>
                 <br />
                 <br />
               </li>
               <li>
-                <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
+                <Button icon="refresh" onClick={(e) => handleClick_incrementCount(e, '')}>
                   count:{count}
                 </Button>
                 <br />
@@ -213,7 +198,10 @@ function App(): JSX.Element {
               <li>{count}</li>
             </ul>
           </div>
-          <div id="page-ipc-com" className="page page-hide">
+          <div
+            id="page-ipc-com"
+            className={activeLink === 'page-ipc-com' ? 'page-show' : 'page-hide'}
+          >
             <h2>page-ipc-com</h2>
             <ul>
               <li>
@@ -243,7 +231,10 @@ function App(): JSX.Element {
               </li>
             </ul>
           </div>
-          <div id="page-env-vars" className="page page-show">
+          <div
+            id="page-env-vars"
+            className={activeLink === 'page-env-vars' ? 'page-show' : 'page-hide'}
+          >
             <h2>page-env-vars</h2>
             <ul>
               <li>APPDATA: {window.electron.process.env['APPDATA']}</li>
@@ -266,8 +257,8 @@ function App(): JSX.Element {
               </li>
             </ul>
           </div>
-          <div id="page1" className="page page-hide">
-            <h2>Main Content</h2>
+          <div id="page1" className={activeLink === 'page1' ? 'page-show' : 'page-hide'}>
+            <h2>page1 Content</h2>
             <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
               count:{count}
             </Button>
@@ -297,10 +288,10 @@ function App(): JSX.Element {
             </div>
             <Versions></Versions>
           </div>
-          <div id="page2" className="page page-hide">
+          <div id="page2" className={activeLink === 'page2' ? 'page-show' : 'page-hide'}>
             <h2> page 2 </h2>
           </div>
-          <div id="page3" className="page page-hide">
+          <div id="page3" className={activeLink === 'page3' ? 'page-show' : 'page-hide'}>
             <h2>Page 3 </h2>
           </div>
         </main>

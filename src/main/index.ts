@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron' // Menu
+import { createHash } from 'crypto'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -38,8 +39,8 @@ db.close((err) => {
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 980,
-    height: 700,
+    width: 1200,
+    height: 800,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -53,8 +54,11 @@ function createWindow(): void {
   function sendMessageToRender(message: string): void {
     const timestamp = Date.now()
     message = 'Hello from main timestamp:' + timestamp.toString()
+    const messageHash: string = createHash('sha256').update(message, 'binary').digest('hex')
+    message = message + '\n' + messageHash
     mainWindow.webContents.send('message-m2r', message)
   }
+  // main event emitter
   setInterval(sendMessageToRender, 1000)
 
   mainWindow.on('ready-to-show', () => {
