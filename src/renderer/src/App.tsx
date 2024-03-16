@@ -15,6 +15,7 @@ import {
   NavbarDivider,
   Popover
 } from '@blueprintjs/core'
+import { Cell, Column, Table2 } from '@blueprintjs/table'
 
 // hide focus outine on buttons
 FocusStyleManager.onlyShowFocusOnTabs()
@@ -23,7 +24,7 @@ function App(): JSX.Element {
   //
   // show/hide pages
   //
-  const [activeLink, setActiveLink] = useState('page-set-state')
+  const [activeLink, setActiveLink] = useState('table')
 
   function showPage(e: SyntheticEvent, id: string): void {
     e.preventDefault()
@@ -68,7 +69,7 @@ function App(): JSX.Element {
     return true
   }
 
-  // Pattern 3: Main to renderer
+  // Pattern 3: Main to renderer one way
   // Receive messages from the main process
   window.electron.ipcRenderer.on('message-m2r', (_, args) => {
     //console.log('message-m2r: ', args)
@@ -77,6 +78,22 @@ function App(): JSX.Element {
       elem.innerText = args
     }
   })
+
+  // Pattern 4: Main to renderer two-way
+  // Receive messages from the main process
+  window.electron.ipcRenderer.on('message-m2r', (_, args) => {
+    //console.log('message-m2r: ', args)
+    const elem = document.getElementById('message-from-main')
+    if (elem) {
+      elem.innerText = args
+    }
+  })
+
+  // table
+  const dollarCellRenderer = (rowIndex: number) => <Cell>{`$${(rowIndex * 10).toFixed(2)}`}</Cell>
+  const euroCellRenderer = (rowIndex: number) => (
+    <Cell>{`€${(rowIndex * 10 * 0.85).toFixed(2)}`}</Cell>
+  )
 
   return (
     <>
@@ -152,8 +169,8 @@ function App(): JSX.Element {
               active={activeLink === 'page-env-vars' ? true : false}
             />
 
-            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page1')} text="Main" />
-            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page2')} text="page2" />
+            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'version')} text="Version" />
+            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'table')} text="Table" />
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page3')} text="page3" />
             <MenuDivider />
             <MenuItem text="Imposta Titolo" icon="cog">
@@ -257,24 +274,13 @@ function App(): JSX.Element {
               </li>
             </ul>
           </div>
-          <div id="page1" className={activeLink === 'page1' ? 'page-show' : 'page-hide'}>
-            <h2>page1 Content</h2>
-            <Button icon="refresh" onClick={() => setCount((count) => count + 1)}>
-              count:{count}
-            </Button>
-            <p>
-              Current value: <strong id="counter">0</strong>
-            </p>
+          <div id="table" className={activeLink === 'version' ? 'page-show' : 'page-hide'}>
+            <h2>Version Content</h2>
             <img alt="logo" className="logo" src={electronLogo} />
             <div className="creator">Powered by electron-vite</div>
             <div className="text">
               Build an Electron app with <span className="react">React</span>
               &nbsp;and <span className="ts">TypeScript</span>
-            </div>
-            <div>
-              <Button className="button" onClick={handleClick2} text="Hello ">
-                {count}
-              </Button>
             </div>
             <p className="tip">
               Please try pressing <code>F12</code> to open the devTool
@@ -288,8 +294,21 @@ function App(): JSX.Element {
             </div>
             <Versions></Versions>
           </div>
-          <div id="page2" className={activeLink === 'page2' ? 'page-show' : 'page-hide'}>
-            <h2> page 2 </h2>
+          <div id="table" className={activeLink === 'table' ? 'page-show' : 'page-hide'}>
+            <h2> Table </h2>
+            <div className="tablebar">
+              <Button className="button" icon="plus" onClick={handleClick2} text="Nuovo elemento">
+                {count}
+              </Button>
+            </div>
+            <Table2 numRows={20}>
+              <Column />
+              <Column />
+              <Column />
+              <Column />
+              <Column />
+              <Column />
+            </Table2>
           </div>
           <div id="page3" className={activeLink === 'page3' ? 'page-show' : 'page-hide'}>
             <h2>Page 3 </h2>
