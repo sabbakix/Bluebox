@@ -1,4 +1,4 @@
-import { HotkeysProvider } from '@blueprintjs/core'
+import { BlueprintProvider } from '@blueprintjs/core'
 
 import '@blueprintjs/core/lib/css/blueprint.css'
 import '@blueprintjs/icons/lib/css/blueprint-icons.css'
@@ -11,9 +11,9 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <HotkeysProvider>
+  <BlueprintProvider>
     <App />
-  </HotkeysProvider>
+  </BlueprintProvider>
 )
 /*
   <React.StrictMode>

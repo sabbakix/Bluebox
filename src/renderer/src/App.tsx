@@ -13,7 +13,11 @@ import {
   NavbarGroup,
   NavbarHeading,
   NavbarDivider,
-  Popover
+  Popover,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  InputGroup
 } from '@blueprintjs/core'
 import { Cell, Column, Table2 } from '@blueprintjs/table'
 
@@ -90,10 +94,15 @@ function App(): JSX.Element {
   })
 
   // table
-  const dollarCellRenderer = (rowIndex: number) => <Cell>{`$${(rowIndex * 10).toFixed(2)}`}</Cell>
-  const euroCellRenderer = (rowIndex: number) => (
+  const dollarCellRenderer = (rowIndex: number): element => (
+    <Cell>{`$${(rowIndex * 10).toFixed(2)}`}</Cell>
+  )
+  const euroCellRenderer = (rowIndex: number): any => (
     <Cell>{`€${(rowIndex * 10 * 0.85).toFixed(2)}`}</Cell>
   )
+
+  // Dialog
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
@@ -171,7 +180,7 @@ function App(): JSX.Element {
 
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'version')} text="Version" />
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'table')} text="Table" />
-            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page3')} text="page3" />
+            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'regex')} text="Regex" />
             <MenuDivider />
             <MenuItem text="Imposta Titolo" icon="cog">
               <MenuItem
@@ -297,21 +306,54 @@ function App(): JSX.Element {
           <div id="table" className={activeLink === 'table' ? 'page-show' : 'page-hide'}>
             <h2> Table </h2>
             <div className="tablebar">
-              <Button className="button" icon="plus" onClick={handleClick2} text="Nuovo elemento">
+              <Button
+                className="button"
+                icon="plus"
+                onClick={() => {
+                  setIsOpen(true)
+                }}
+                text="Nuovo elemento"
+              >
                 {count}
               </Button>
             </div>
-            <Table2 numRows={20}>
-              <Column />
-              <Column />
-              <Column />
-              <Column />
-              <Column />
-              <Column />
+            <Dialog title="Informational dialog" icon="info-sign" isOpen={isOpen}>
+              <DialogBody>
+                {/* body contents here */}
+                <h4>Hello Dialog Body</h4>
+                <InputGroup type="text" leftIcon="info-sign" placeholder="Firstname" />
+                <InputGroup type="text" leftIcon="info-sign" placeholder="Name" />
+                <InputGroup type="text" leftIcon="info-sign" placeholder="Company Name" />
+                <InputGroup type="text" leftIcon="info-sign" placeholder="Value" />
+              </DialogBody>
+              <DialogFooter
+                actions={
+                  <Button
+                    intent="primary"
+                    text="Close"
+                    onClick={() => {
+                      setIsOpen(false)
+                    }}
+                  />
+                }
+              />
+            </Dialog>
+            <Table2 numRows={20} className="table-width">
+              <Column name="Firstname" cellRenderer={dollarCellRenderer} />
+              <Column name="Name" cellRenderer={euroCellRenderer} />
+              <Column name="VAT" cellRenderer={dollarCellRenderer} />
+              <Column name="ID" cellRenderer={euroCellRenderer} />
+              <Column name="Date" cellRenderer={dollarCellRenderer} />
+              <Column name="Euros" cellRenderer={euroCellRenderer} />
             </Table2>
           </div>
-          <div id="page3" className={activeLink === 'page3' ? 'page-show' : 'page-hide'}>
-            <h2>Page 3 </h2>
+          <div id="regex" className={activeLink === 'regex' ? 'page-show' : 'page-hide'}>
+            <h2>Regex</h2>
+            <p>
+              <Button icon="send-message" onClick={ipcHandleRendToMain2way}>
+                Open File
+              </Button>
+            </p>
           </div>
         </main>
         <footer>

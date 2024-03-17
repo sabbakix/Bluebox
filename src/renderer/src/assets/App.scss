@@ -2,7 +2,7 @@
 /*@import './fonts/roboto.css';*/
 
 $border-color: #666;
-$primary-color:$dark-gray1;
+$primary-color: $dark-gray1;
 $secondary-color: $dark-gray3;
 html,
 body {
@@ -16,58 +16,61 @@ body {
   */
   background-color: $primary-color;
   .logo {
-      width: 40px;
+    width: 40px;
   }
 }
 
 .container {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    grid-template-rows: $pt-navbar-height 1fr 20px;
-    grid-template-areas:
-        "header header"
-        "sidebar main"
-        "footer footer";
-    height: 100vh;
-  }
-  
-  header {
-    grid-area: header;
-    background-color: $secondary-color;
-    padding: 0px;
-    text-align: center;
-    border-bottom: solid 1px $border-color;
-  }
-  
-  aside {
-    grid-area: sidebar;
-    background-color: $secondary-color;
-    overflow: auto;
-    padding: 0px;
-    border-right: solid 1px $border-color;
-  }
-  
-  main {
-    grid-area: main;
-    padding: 20px;
-    overflow: auto;
-  }
-  
-  footer {
-    grid-area: footer;
-    background-color: $secondary-color;
-    color: #fff;
-    padding: 0 10px 0 0;
-    text-align: right;
-    border-top: solid 1px $border-color;
-  }
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: $pt-navbar-height 1fr 20px;
+  grid-template-areas:
+    'header header'
+    'sidebar main'
+    'footer footer';
+  height: 100vh;
+}
 
-  .page-hide {
-    display: none;
-  }
-  .page-show {
-    display: block;
-  }
-  .tablebar{
-    margin-bottom: 5px;
-  }
+header {
+  grid-area: header;
+  background-color: $secondary-color;
+  padding: 0px;
+  text-align: center;
+  border-bottom: solid 1px $border-color;
+}
+
+aside {
+  grid-area: sidebar;
+  background-color: $secondary-color;
+  overflow: auto;
+  padding: 0px;
+  border-right: solid 1px $border-color;
+}
+
+main {
+  grid-area: main;
+  padding: 20px;
+  overflow: auto;
+}
+
+footer {
+  grid-area: footer;
+  background-color: $secondary-color;
+  color: #fff;
+  padding: 0 10px 0 0;
+  text-align: right;
+  border-top: solid 1px $border-color;
+}
+
+.page-hide {
+  display: none;
+}
+.page-show {
+  display: block;
+}
+.tablebar {
+  margin-bottom: 5px;
+}
+.table-width {
+  width: max-content;
+}
