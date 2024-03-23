@@ -173,8 +173,6 @@ app.whenReady().then(() => {
   }
   ipcMain.handle('dialog:openFile', handleFileOpen)
 
-
-
   createWindow()
 
   app.on('activate', function () {

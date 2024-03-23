@@ -17,7 +17,8 @@ import {
   Dialog,
   DialogBody,
   DialogFooter,
-  InputGroup
+  InputGroup,
+  TextArea
 } from '@blueprintjs/core'
 import { Cell, Column, Table2 } from '@blueprintjs/table'
 
@@ -28,7 +29,7 @@ function App(): JSX.Element {
   //
   // show/hide pages
   //
-  const [activeLink, setActiveLink] = useState('table')
+  const [activeLink, setActiveLink] = useState('page-regex')
 
   function showPage(e: SyntheticEvent, id: string): void {
     e.preventDefault()
@@ -103,6 +104,22 @@ function App(): JSX.Element {
 
   // Dialog
   const [isOpen, setIsOpen] = useState(false)
+
+  // regex
+  const [regexPattern, setRegexPattern] = useState('')
+  const [regexText, setRegexText] = useState('')
+  const [regexResult, setRegexResult] = useState('')
+
+  function handleRegex(): void {
+    //console.log(regexPattern)
+    //console.log(regexText)
+
+    const re = new RegExp(regexPattern, 'g')
+    console.log('regexPattern', regexPattern)
+    const result_array = [...regexText.matchAll(re)]
+    console.log(result_array[0][0])
+    setRegexResult(result_array[0][0])
+  }
 
   return (
     <>
@@ -180,7 +197,7 @@ function App(): JSX.Element {
 
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'version')} text="Version" />
             <MenuItem icon="new-link" onClick={(e) => showPage(e, 'table')} text="Table" />
-            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'regex')} text="Regex" />
+            <MenuItem icon="new-link" onClick={(e) => showPage(e, 'page-regex')} text="Regex" />
             <MenuDivider />
             <MenuItem text="Imposta Titolo" icon="cog">
               <MenuItem
@@ -347,13 +364,27 @@ function App(): JSX.Element {
               <Column name="Euros" cellRenderer={euroCellRenderer} />
             </Table2>
           </div>
-          <div id="regex" className={activeLink === 'regex' ? 'page-show' : 'page-hide'}>
+          <div id="page-regex" className={activeLink === 'page-regex' ? 'page-show' : 'page-hide'}>
             <h2>Regex</h2>
-            <p>
-              <Button icon="send-message" onClick={ipcHandleRendToMain2way}>
-                Open File
-              </Button>
-            </p>
+            <InputGroup
+              type="text"
+              id="regex-pattern"
+              leftIcon="info-sign"
+              placeholder="regex pattern"
+              onChange={(e) => setRegexPattern(e.target.value)}
+            />
+            <Button icon="social-media" onClick={handleRegex}>
+              Run Regex
+            </Button>
+            <TextArea
+              fill={true}
+              id="regex-text"
+              placeholder="text"
+              onChange={(e) => setRegexText(e.target.value)}
+            ></TextArea>
+            <div>
+              <h3>Result:</h3> <pre>{regexResult}</pre>
+            </div>
           </div>
         </main>
         <footer>
