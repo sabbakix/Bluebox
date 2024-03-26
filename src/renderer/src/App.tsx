@@ -18,6 +18,7 @@ import {
   DialogBody,
   DialogFooter,
   InputGroup,
+  ControlGroup,
   TextArea
 } from '@blueprintjs/core'
 import { Cell, Column, Table2 } from '@blueprintjs/table'
@@ -45,10 +46,6 @@ function App(): JSX.Element {
   function handleClick_incrementCount(e: SyntheticEvent, param: string): void {
     e.preventDefault()
     console.log(e.target, param)
-    setCount(count + 1)
-  }
-
-  function handleClick2(): void {
     setCount(count + 1)
   }
 
@@ -95,7 +92,7 @@ function App(): JSX.Element {
   })
 
   // table
-  const dollarCellRenderer = (rowIndex: number): element => (
+  const dollarCellRenderer = (rowIndex: number): any => (
     <Cell>{`$${(rowIndex * 10).toFixed(2)}`}</Cell>
   )
   const euroCellRenderer = (rowIndex: number): any => (
@@ -108,17 +105,30 @@ function App(): JSX.Element {
   // regex
   const [regexPattern, setRegexPattern] = useState('')
   const [regexText, setRegexText] = useState('')
+  const [regexReplace, setRegexReplace] = useState('')
   const [regexResult, setRegexResult] = useState('')
 
   function handleRegex(): void {
     //console.log(regexPattern)
     //console.log(regexText)
+    try {
+      const re = new RegExp(regexPattern, 'g')
+      //console.log('regexPattern: ', regexPattern)
+      // console.log('regexReplace: ', regexReplace)
 
-    const re = new RegExp(regexPattern, 'g')
-    console.log('regexPattern', regexPattern)
-    const result_array = [...regexText.matchAll(re)]
-    console.log(result_array[0][0])
-    setRegexResult(result_array[0][0])
+      // const result_array = [...regexText.matchAll(re)]
+      setRegexResult(regexText.replaceAll(re, regexReplace))
+      // console.log('replace:', regexText.replaceAll(re, regexReplace))
+
+      // console.log(result_array)
+      // result_array.map((result) => {
+      //   console.log('result: ', result[0])
+      // })
+      //setRegexResult(result_array[0][0])
+    } catch (error) {
+      setRegexResult('Error')
+      console.error(error)
+    }
   }
 
   return (
@@ -355,27 +365,37 @@ function App(): JSX.Element {
                 }
               />
             </Dialog>
-            <Table2 numRows={20} className="table-width">
+            <Table2 numRows={12}>
               <Column name="Firstname" cellRenderer={dollarCellRenderer} />
               <Column name="Name" cellRenderer={euroCellRenderer} />
               <Column name="VAT" cellRenderer={dollarCellRenderer} />
               <Column name="ID" cellRenderer={euroCellRenderer} />
-              <Column name="Date" cellRenderer={dollarCellRenderer} />
-              <Column name="Euros" cellRenderer={euroCellRenderer} />
             </Table2>
           </div>
           <div id="page-regex" className={activeLink === 'page-regex' ? 'page-show' : 'page-hide'}>
             <h2>Regex</h2>
+            <ControlGroup fill={false} vertical={false}>
+              <InputGroup
+                fill={true}
+                type="text"
+                id="regex-pattern"
+                leftIcon="info-sign"
+                placeholder="regex pattern"
+                onChange={(e) => setRegexPattern(e.target.value)}
+              />
+              <Button icon="social-media" onClick={handleRegex}>
+                Run Regex
+              </Button>
+            </ControlGroup>
             <InputGroup
+              fill={true}
               type="text"
-              id="regex-pattern"
+              id="regex-replace"
               leftIcon="info-sign"
-              placeholder="regex pattern"
-              onChange={(e) => setRegexPattern(e.target.value)}
+              placeholder="regex replace"
+              onChange={(e) => setRegexReplace(e.target.value)}
             />
-            <Button icon="social-media" onClick={handleRegex}>
-              Run Regex
-            </Button>
+
             <TextArea
               fill={true}
               id="regex-text"
